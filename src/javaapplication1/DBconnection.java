@@ -12,9 +12,9 @@ import java.sql.Connection;
  */
 public class DBconnection {
 
-private static final String url = "jdbc:mysql://localhost:3306/database_name";
-private static final String username = "user_name";
-private static final String password = "";
+private static final String url = "jdbc:mysql://localhost:3306/DB";
+private static final String username = "root";
+private static final String password = "aetuqdgjwcb,_A123";
 
 
 

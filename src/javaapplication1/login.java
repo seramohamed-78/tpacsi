@@ -4,6 +4,8 @@
  */
 package javaapplication1;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,13 +21,9 @@ import javax.swing.JOptionPane;
  */
 
 public class login extends javax.swing.JFrame {
-DBconnection con;
     public login() {
         initComponents();
-        con = new DBconnection();
-        if(con == null){
- JOptionPane.showMessageDialog(this, "Database connection problem","Error", JOptionPane.ERROR_MESSAGE);}
-       
+        
     }
     
 
@@ -41,6 +39,7 @@ DBconnection con;
         jLabel3 = new javax.swing.JLabel();
         loginbtn = new javax.swing.JButton();
         password_in = new javax.swing.JPasswordField();
+        gotosigup = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,20 +72,20 @@ DBconnection con;
             }
         });
 
+        gotosigup.setText("create new account");
+        gotosigup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gotosigupActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(150, 150, 150)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(72, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(loginbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(93, 93, 93))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -97,7 +96,16 @@ DBconnection con;
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(password_in, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(email_in, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(62, 62, 62))))
+                        .addGap(62, 62, 62))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(gotosigup)
+                            .addComponent(loginbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(93, 93, 93))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(150, 150, 150)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,7 +122,9 @@ DBconnection con;
                 .addComponent(password_in, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addComponent(loginbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gotosigup)
+                .addGap(23, 23, 23))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -148,7 +158,7 @@ DBconnection con;
            if (email.isEmpty() || pass.isEmpty()){
            JOptionPane.showMessageDialog(this, "Password should not be empty","Error", JOptionPane.ERROR_MESSAGE);}
            else {
-        userLogin( email , pass);
+        userLogin( email , hashPassword(pass));
         }
 
        
@@ -157,6 +167,12 @@ DBconnection con;
     private void password_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_password_inActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_password_inActionPerformed
+
+    private void gotosigupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gotosigupActionPerformed
+          dispose();
+        Signup p = new Signup();
+        p.setVisible(true);
+    }//GEN-LAST:event_gotosigupActionPerformed
 
     /**
      * @param args the command line arguments
@@ -195,6 +211,7 @@ DBconnection con;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField email_in;
+    private javax.swing.JButton gotosigup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -202,29 +219,57 @@ DBconnection con;
     private javax.swing.JButton loginbtn;
     private javax.swing.JPasswordField password_in;
     // End of variables declaration//GEN-END:variables
-
+    public static String hashPassword(String password) {
+    try {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(password.getBytes());
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
     private void userLogin(String email, String pass)  {
                     
 
        Connection cn = DBconnection.connecttodb();
     try {
        
-        PreparedStatement pstm = (PreparedStatement) cn.prepareStatement("select email,name from users where (email = ? and name = ?)");
+        PreparedStatement pstm = (PreparedStatement) cn.prepareStatement("select state from users where (email = ? and password = ?)");
         pstm.setString(1, email);
                
 
-        pstm.setString(2, pass);
+        pstm.setString(2, hashPassword(pass));
         
         ResultSet rs = pstm.executeQuery();
-        if(rs.next()){
+        if(rs.next()  ){
         User_Page p = new User_Page();
         dispose();
-        p.setTitle("user page");
+        System.out.println(rs.getString(1)  );
+       if (rs.getString(1).equals("u") ){
+       
+       p.setTitle("USERPAGE");
+       }
+       else
+       { p.setTitle("AdminPAGE");}
+       
         
-        p.setVisible(true);
         
-        }else{
-           JOptionPane.showMessageDialog(this, "User Doesn't exist check your E-mail and password","Error", JOptionPane.ERROR_MESSAGE);
+        
+        
+        p.setVisible(true);}
+        
+     
+        
+        
+        else{
+           JOptionPane.showMessageDialog(this, "check your E-mail and password","Error", JOptionPane.ERROR_MESSAGE);
         }
         
     } catch (SQLException ex) {
