@@ -60,9 +60,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="272" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="Logout" alignment="0" min="-2" pref="156" max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" pref="156" max="-2" attributes="0"/>
-                      <Component id="Username" min="-2" max="-2" attributes="0"/>
                       <Component id="Role" min="-2" max="-2" attributes="0"/>
+                      <Component id="Username" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -79,7 +80,9 @@
                   <Component id="Role" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="jButton1" min="-2" pref="46" max="-2" attributes="0"/>
-                  <EmptySpace pref="229" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                  <Component id="Logout" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="159" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -113,6 +116,14 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Role"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="Logout">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Logout"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LogoutActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
