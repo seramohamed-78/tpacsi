@@ -19,14 +19,12 @@ import javax.swing.JOptionPane;
  *
  * @author mohamed
  */
-
 public class login extends javax.swing.JFrame {
+
     public login() {
         initComponents();
-        
-    }
-    
 
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -146,22 +144,20 @@ public class login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginbtnActionPerformed
-           String email = email_in.getText();
-        
-          String pass = new String(password_in.getPassword());
-           if (email.isEmpty() && pass.isEmpty()){
-           JOptionPane.showMessageDialog(this, "E-mail & Password should not be empty","Error", JOptionPane.ERROR_MESSAGE);}
-          else
-          if (email.isEmpty() ){
-           JOptionPane.showMessageDialog(this, "E-mail  should not be empty","Error", JOptionPane.ERROR_MESSAGE);}
-           else
-           if (email.isEmpty() || pass.isEmpty()){
-           JOptionPane.showMessageDialog(this, "Password should not be empty","Error", JOptionPane.ERROR_MESSAGE);}
-           else {
-        userLogin( email , hashPassword(pass));
+        String email = email_in.getText();
+
+        String pass = new String(password_in.getPassword());
+        if (email.isEmpty() && pass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "E-mail & Password should not be empty", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "E-mail  should not be empty", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (email.isEmpty() || pass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Password should not be empty", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            userLogin(email, hashPassword(pass));
         }
 
-       
+
     }//GEN-LAST:event_loginbtnActionPerformed
 
     private void password_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_password_inActionPerformed
@@ -169,7 +165,7 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_password_inActionPerformed
 
     private void gotosigupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gotosigupActionPerformed
-          dispose();
+        dispose();
         Signup p = new Signup();
         p.setVisible(true);
     }//GEN-LAST:event_gotosigupActionPerformed
@@ -204,7 +200,7 @@ public class login extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-          
+
             new login().setVisible(true);
         });
     }
@@ -220,61 +216,67 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JPasswordField password_in;
     // End of variables declaration//GEN-END:variables
     public static String hashPassword(String password) {
-    try {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(password.getBytes());
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
-        return hexString.toString();
-    } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
+        return null;
     }
-    return null;
-}
-    private void userLogin(String email, String pass)  {
-                    
 
-       Connection cn = DBconnection.connecttodb();
-    try {
-       
-        PreparedStatement pstm = (PreparedStatement) cn.prepareStatement("select state from users where (email = ? and password = ?)");
-        pstm.setString(1, email);
-               
+    private void userLogin(String email, String pass) {
 
-        pstm.setString(2, hashPassword(pass));
-        
-        ResultSet rs = pstm.executeQuery();
-        if(rs.next()  ){
-        User_Page p = new User_Page();
-        dispose();
-        System.out.println(rs.getString(1)  );
-       if (rs.getString(1).equals("u") ){
-       
-       p.setTitle("USERPAGE");
-       }
-       else
-       { p.setTitle("AdminPAGE");}
-       
-        
-        
-        
-        
-        p.setVisible(true);}
-        
-     
-        
-        
-        else{
-           JOptionPane.showMessageDialog(this, "check your E-mail and password","Error", JOptionPane.ERROR_MESSAGE);
+        Connection cn = DBconnection.connecttodb();
+        try {
+
+            PreparedStatement pstm = (PreparedStatement) cn.prepareStatement("select state from users where (email = ? and password = ?)");
+            pstm.setString(1, email);
+            pstm.setString(2, hashPassword(pass));
+            PreparedStatement pstm2 = (PreparedStatement) cn.prepareStatement("select name from users where (email = ? and password = ?)");
+            pstm2.setString(1, email);
+            pstm2.setString(2, hashPassword(pass));
+            ResultSet rs = pstm.executeQuery();
+            ResultSet rs2 = pstm2.executeQuery();
+
+            if (rs.next()) {
+                  dispose();
+                User_Page p = new User_Page();
+              
+                
+              
+
+                    p.setTitle("USERPAGE");
+                               
+
+                    if (rs2.next()) {
+            System.out.println(rs2.getString("name"));
+            p.setUsername("Welcome back "+ rs2.getString("name"));
+           
         }
-        
-    } catch (SQLException ex) {
-       System.out.println(ex.getMessage());
-    }
-    
+                   System.out.println("aaaaaa"+rs.getString(1));
+            p.setRole(rs.getString(1));
+          
+                  
+                
+
+                p.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "check your E-mail and password", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
     }
 }
