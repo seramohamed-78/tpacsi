@@ -14,7 +14,7 @@ public class DBconnection {
 
 private static final String url = "jdbc:mysql://localhost:3306/DB";
 private static final String username = "root";
-private static final String password = "aetuqdgjwcb,_A123";
+private static final String password = "password";
 
 
 
